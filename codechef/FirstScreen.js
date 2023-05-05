@@ -381,7 +381,7 @@ const FirstScreen = ({ navigation, item }) => {
                 <Text style={{ color: 'black', fontWeight: '800', marginLeft: 10, marginTop: 10, fontSize: 15, marginBottom: 15, }}> Category  </Text>
 
 
-                <TouchableOpacity onPress={} >
+                <TouchableOpacity  >
                   <Text style={{ color: 'orange', fontWeight: '700', margin: 15, textAlign: 'right', marginLeft: 200, marginTop: 10, }} >View All  </Text>
                 </TouchableOpacity>
               </View>
