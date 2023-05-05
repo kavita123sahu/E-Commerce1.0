@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, Image, TouchableOpacity, Alert, StatusBar } from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableOpacity, Alert, StatusBar, ActivityIndicator } from 'react-native';
 import { Appbar, Card, Drawer } from 'react-native-paper';
 import Categories from './Categories';
 import Wishlist from './Wishlist';
 import Orders from './Orders';
+import DrawerApp from './DrawerApp';
 import Allcategory from './Allcategory';
 import { useIsFocused } from '@react-navigation/native';
 import { FlatList, ScrollView, ImageBackground } from 'react-native-gesture-handler';
@@ -11,10 +12,10 @@ import Modal from "react-native-modal";
 import Detailspage from './Detailspage';
 import Feather from 'react-native-vector-icons/Feather';
 import { Fontisto, FontAwesome, MaterialCommunityIcons, AntDesign, Entypo } from './vectoricon';
-import Images from './images';
+// import Images from './images';
 const images = 'http://shoppadmin.technodark.in/Images/';
-
 const apicatall = "https://shoppadmin.technodark.in/AppApis/Frontend/api_home_page_contents.php?action=fetch_special_categories_for_home&media=appbycworks&slug=";
+
 const FirstScreen = ({ navigation, item }) => {
 
   const [dataitem, setdataitem] = useState();
@@ -27,17 +28,16 @@ const FirstScreen = ({ navigation, item }) => {
   const [iscategoryVisible, setcategoryVisible] = useState(false);
 
   const isFocused = useIsFocused();
+
   const [modal, setModal] = useState('');
   const [text, setText] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
-
+  const [loader, setLoader] = useState(false);
 
   const onModal = () => {
     setModalVisible(!isModalVisible);
     setModal('ACTION_1');
   };
-
-
 
 
   useEffect(() => {
@@ -47,16 +47,19 @@ const FirstScreen = ({ navigation, item }) => {
 
   //bannerpage api useeffect 
   useEffect(() => {
+    setLoader(true);
     fetch("http://shoppadmin.technodark.in/AppApis/Frontend/api_home_page_contents.php?action=fetch_all_home_banner&media=appbycworks")
       .then(response => response.json())
       .then((responseJson) => {
         // console.log('getting data from fetch', responseJson1)
+        if (responseJson) {
+          setLoader(false)
+        }
         setdataitem(responseJson);
         setdataitem(responseJson.data);
         setdatastatus(responseJson.status);
       })
   }, [])
-
 
   useEffect(() => {
     fetch("http://shoppadmin.technodark.in/AppApis/Frontend/api_home_page_contents.php?action=fetch_categories_for_home&media=appbycworks")
@@ -90,7 +93,7 @@ const FirstScreen = ({ navigation, item }) => {
       .then((responseJson) => {
 
         setImagedata3(responseJson.imagename)
-        console.log("---------banner>", responseJson.imagename);
+        // console.log("---------banner>", responseJson.imagename);
 
       })
   }, [])
@@ -150,12 +153,7 @@ const FirstScreen = ({ navigation, item }) => {
   // four four data shoen data in 4th api flatlist
   const ViewallItem = ({ item }) => {
     return (
-      <TouchableOpacity onPress={() => {
-        // console.log(" kavita ", dataitem2);
-        navigation.navigate('Categories', {
-          paramslug: item.slug,
-        })
-      }}  >
+      <TouchableOpacity>
         <Card style={{ flex: 1, width: 150, top: 1, height: 190, margin: 8, backgroundColor: '#FCFCFB9', borderRadius: 10, shadowRadius: 5, shadowColor: 'white' }}>
 
           <Image source={{ uri: images + item.imagename, }} style={{ width: 150, height: 100, borderTopLeftRadius: 10, borderTopRightRadius: 10, }} />
@@ -198,6 +196,7 @@ const FirstScreen = ({ navigation, item }) => {
           </TouchableOpacity>
         </View>
 
+
         <FlatList
 
           data={product}
@@ -224,11 +223,11 @@ const FirstScreen = ({ navigation, item }) => {
       { text: 'OK', onPress: () => console.log('OK Pressed') },
     ]);
 
-
   return (
 
     <View style={{ flex: 1 }}>
       <StatusBar backgroundColor="pink" />
+      {/* <DrawerApp /> */}
 
       <Modal style={{ marginLeft: 0, marginBottom: 50, marginRight: 0, height: '100%' }} animationIn="slideInLeft" animationOut="slideOutLeft" isVisible={isModalVisible} onBackButtonPress={onModal}>
 
@@ -364,53 +363,65 @@ const FirstScreen = ({ navigation, item }) => {
 
 
       <ScrollView>
-        <FlatList
-          horizontal={true}
-          data={dataitem}
-          renderItem={bannerpage}
-          keyExtractor={item => item.id}
-        />
+        {
+          loader ?
+            <View style={{ justifyContent: 'center', alignItems: 'center', height: 250, flex: 1 }}>
+              <ActivityIndicator size={'large'} color={"pink"} />
+            </View>
+            :
+            <>
+              <FlatList
+                horizontal={true}
+                data={dataitem}
+                renderItem={bannerpage}
+                keyExtractor={item => item.id}
+              />
 
-        <View style={{ flexDirection: 'row' }}>
-          <Text style={{ color: 'black', fontWeight: '800', marginLeft: 10, marginTop: 10, fontSize: 15, marginBottom: 15, }}> Category  </Text>
+              <View style={{ flexDirection: 'row' }}>
+                <Text style={{ color: 'black', fontWeight: '800', marginLeft: 10, marginTop: 10, fontSize: 15, marginBottom: 15, }}> Category  </Text>
 
 
-          <TouchableOpacity onPress={() => { navigation.navigate('Allcategory') }} >
-            <Text style={{ color: 'orange', fontWeight: '700', margin: 15, textAlign: 'right', marginLeft: 200, marginTop: 10, }} >View All  </Text>
-          </TouchableOpacity>
-        </View>
-
-
-
-        <FlatList
-          paddingHorizontal={10}
-          numColumns={6}
-          data={dataitem2}
-          renderItem={renderitem2}
-          keyExtractor={item => item.id}
-          initialNumToRender={2}
-
-        />
-        <Card style={{ margin: 10, borderRadius: 20, marginTop: 30, width: 340, height: 200, marginBottom: 15, }}>
-          <TouchableOpacity onPress={() => {
-            navigation.navigate('Detailspage')
-          }}>
-            <Image
-              resizeMode='contain'
-              style={{ width: 340, height: 200, borderRadius: 20, backgroundColor: 'white' }}
-              source={{ uri: images + Imagedata3 }}
-            />
-          </TouchableOpacity>
-        </Card>
+                <TouchableOpacity onPress={} >
+                  <Text style={{ color: 'orange', fontWeight: '700', margin: 15, textAlign: 'right', marginLeft: 200, marginTop: 10, }} >View All  </Text>
+                </TouchableOpacity>
+              </View>
 
 
 
-        <FlatList
-          data={dataitem3}
-          numColumns={1}
-          renderItem={renderitem3}
-          keyExtractor={item => item.id}
-        />
+              <FlatList
+                paddingHorizontal={10}
+                numColumns={6}
+                data={dataitem2}
+                renderItem={renderitem2}
+                keyExtractor={item => item.id}
+                initialNumToRender={2}
+
+              />
+
+              <Card style={{ margin: 10, borderRadius: 20, marginTop: 30, width: 340, height: 200, marginBottom: 15, }}>
+                <TouchableOpacity onPress={() => {
+                  navigation.navigate('Categories', {
+                    paramslug: item.slug,
+
+                  })
+                }}>
+                  <Image
+                    resizeMode='contain'
+                    style={{ width: 340, height: 200, borderRadius: 20, backgroundColor: 'white' }}
+                    source={{ uri: images + Imagedata3 }}
+                  />
+                </TouchableOpacity>
+              </Card>
+
+              <FlatList
+                data={dataitem3}
+                numColumns={1}
+                renderItem={renderitem3}
+                keyExtractor={item => item.id}
+              />
+
+            </>
+        }
 
       </ScrollView>
 

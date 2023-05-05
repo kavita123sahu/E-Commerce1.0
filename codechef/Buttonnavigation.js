@@ -9,10 +9,10 @@ const Tab = createBottomTabNavigator();
 
 const Buttonnavigation  = () => {
     return (
+      
       <Tab.Navigator>
         <Tab.Screen name='FirstScreen' component={FirstScreen} options={{headerShown:false,
           title: 'Firstpage ',
-          
           headerStyle: {
             backgroundColor: 'green'
           }

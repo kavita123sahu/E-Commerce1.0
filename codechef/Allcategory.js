@@ -21,6 +21,7 @@ const Allcategory = ({ navigation, route }) => {
   }, []);
 
 
+  
 
   const renderItems = ({ item }) => {
     return (

@@ -5,11 +5,10 @@ import { EvilIcons, FontAwesome } from './vectoricon';
 const images = 'http://shoppadmin.technodark.in/Images/';
 const searchapi = 'http://shoppadmin.technodark.in/AppApis/Frontend/api_home_page_contents.php?action=fetch_search_result&media=appbycworks&key=';
 
+
 const SearchSection = ({ Data, input, setInput }) => {
   const [searchQuery, setSearchQuery] = useState();
   const [filteredDataSource, setFilteredDataSource] = useState();
-
-
 
   // useEffect(() => {
 

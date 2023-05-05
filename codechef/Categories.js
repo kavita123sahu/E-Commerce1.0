@@ -12,15 +12,15 @@ const catapi = "https://shoppadmin.technodark.in/AppApis/Frontend/api_category_c
 const images = 'http://shoppadmin.technodark.in/Images/';
 
 const Categories = ({ navigation, route }) => {
-    const slug = route.params.paramslug;
-    const subslug = route.params.paramslug;
+    // const slug = route.params.paramslug;
+    // const subslug = route.params.paramslug;
     const catslug = route.params.paramslug;
     const [dataitem1, setdataitem1] = useState();
     const [dataitem3, setdataitem3] = useState();
 
 
     useEffect(() => {
-        const apisub = subapi + subslug
+        const apisub = subapi + catslug
         // console.log("subapi=-------->",apisub )
         fetch(apisub)
             .then(response => response.json())
@@ -34,7 +34,7 @@ const Categories = ({ navigation, route }) => {
 
 
     useEffect(() => {
-        const apicat = catapi + slug + "&page=1"
+        const apicat = catapi + catslug + "&page=1"
         // console.log("apiurl======>", apicat)
         fetch(apicat)
             .then(response => response.json())
@@ -42,19 +42,15 @@ const Categories = ({ navigation, route }) => {
                 // console.log('getting data from kavita ideas ', responseJson)
                 setdataitem3(responseJson);
                 setdataitem3(responseJson.data);
-
             })
     }, [])
-
-
-
 
     const subcategory = ({ item }) => {
 
         return (
             <TouchableOpacity onPress={() => {
                 // console.log(" kavita ", dataitem2);
-                navigation.navigate('FirstScreen', {
+                navigation.navigate('Detailspage', {
                     paramslug: item.slug,
                 })
             }}>
@@ -83,13 +79,22 @@ const Categories = ({ navigation, route }) => {
 
     // redirectslug page for banner
     const bannercategory = ({ item }) => {
-
+        console.log("123456789",item);
         return (
 
             <TouchableOpacity onPress={() => {
-                // console.log(" kavita ", dataitem2);
-                navigation.navigate('Detailspage')
-            }}  >
+                console.log(" item.product_category ", item.product_category);
+                console.log("product_brand---->",item.product_brand)
+                    
+                navigation.navigate('Bannerapi', {
+                    paramdescrip: item.slug,
+                    // paramfour= catslug,
+                    // paramtitl= item.product_title,
+                    // parambrnditem.product_brand,
+                    
+                  })
+            }}>
+
                 <Card style={{ flex: 1, width: 150, top: 1, height: 190, marginLeft: 17, margin: 8, backgroundColor: '#FCFCFB9', borderRadius: 10, shadowRadius: 5, shadowColor: 'white' }}>
                     <View style={{ position: 'relative', }}>
 
